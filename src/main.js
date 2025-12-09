@@ -107,7 +107,7 @@ function fitSlideToScreen(slide) {
     // Reset scale to measure natural size
     slide.style.transform = 'scale(1)';
 
-    const padding = 40; // Safety padding
+    const padding = 100; // Safety padding (increased for better fit)
     const w = window.innerWidth - padding;
     const h = window.innerHeight - padding;
     const slideH = slide.scrollHeight;
