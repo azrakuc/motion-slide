@@ -58,3 +58,17 @@ Markdownファイルを編集するだけで、簡単にスライドを作成で
 
 - **スライド切り替え時間**: `src/main.js` の `slideDuration` 変数（ミリ秒）を変更してください。
 - **色やフォント**: `src/style.css` の `:root` 変数を変更してください。
+
+## GitHub Pagesへの反映手順
+
+### 通常の反映（ローカルで作業）
+推奨される方法です。
+1. `public/slides.md` を編集。
+2. `npm run build` を実行。
+3. git commit / push。
+
+### ビルド環境がない場合（GitHub上での直接編集など）
+`docs/slides.md` を直接編集することで、ビルドなしで内容を更新できます。
+ただし、後でローカルでビルドを実行すると、`public/slides.md` の内容で上書きされるため注意してください。
+（ローカルの `public/slides.md` にも変更を適用しておくことをお勧めします）
+

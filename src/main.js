@@ -1,5 +1,5 @@
 import { marked } from 'marked';
-import slidesMarkdown from '../slides.md?raw';
+// import slidesMarkdown from '../slides.md?raw'; // Removed raw import
 
 const slideContainer = document.getElementById('slide-container');
 let slides = [];
@@ -8,7 +8,8 @@ const slideDuration = 5000; // 5 seconds per slide
 
 async function init() {
     try {
-        const text = slidesMarkdown;
+        const response = await fetch('./slides.md'); // Reverted to fetch
+        const text = await response.text();
         const html = marked.parse(text);
 
         // Split by <hr> (horizontal rule) to create slides
