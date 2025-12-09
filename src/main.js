@@ -1,4 +1,5 @@
 import { marked } from 'marked';
+import slidesMarkdown from '../slides.md?raw';
 
 const slideContainer = document.getElementById('slide-container');
 let slides = [];
@@ -7,8 +8,7 @@ const slideDuration = 5000; // 5 seconds per slide
 
 async function init() {
     try {
-        const response = await fetch('./slides.md');
-        const text = await response.text();
+        const text = slidesMarkdown;
         const html = marked.parse(text);
 
         // Split by <hr> (horizontal rule) to create slides
@@ -42,8 +42,8 @@ async function init() {
 }
 
 function applyMotionTypography(element) {
-    // Simple implementation: wrap characters in h1 and p tags
-    const targets = element.querySelectorAll('h1, h2, p');
+    // Simple implementation: wrap characters in tags
+    const targets = element.querySelectorAll('h1, h2, p, li');
     targets.forEach(target => {
         const text = target.innerText;
         // Avoid destroying child elements if any (simple text only for now)
