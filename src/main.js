@@ -12,7 +12,6 @@ async function init() {
         const html = marked.parse(text);
 
         // Split by <hr> (horizontal rule) to create slides
-        // marked converts '---' to '<hr>'
         const slideContents = html.split('<hr>');
 
         slideContents.forEach((content, index) => {
@@ -32,9 +31,17 @@ async function init() {
         createBackgroundLights();
 
         if (slides.length > 0) {
-            showSlide(0);
+            // Show the first slide
+            showSlide(currentSlideIndex);
+
+            // Auto-advance slides
             setInterval(nextSlide, slideDuration);
         }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            fitSlideToScreen(slides[currentSlideIndex]);
+        });
     } catch (error) {
         console.error('Failed to load slides:', error);
         slideContainer.innerHTML = '<p>Error loading slides.</p>';
@@ -58,11 +65,17 @@ function applyMotionTypography(element) {
 
 function showSlide(index) {
     slides.forEach((slide, i) => {
-        slide.classList.remove('active', 'slide-enter', 'slide-exit');
         if (i === index) {
             slide.classList.add('active', 'slide-enter');
-        } else if (i === (index - 1 + slides.length) % slides.length) {
-            // Previous slide exits
+            slide.classList.remove('slide-exit');
+            fitSlideToScreen(slide); // Fit content when showing slide
+        } else {
+            slide.classList.remove('active', 'slide-enter');
+            // Check if it was the previous slide to exit
+            if (i === (index - 1 + slides.length) % slides.length) {
+                // Keep slide-exit logic if managed elsewhere, or reset here if simple switching
+                // For now, simple switching clean up
+            }
         }
     });
 }
@@ -74,15 +87,39 @@ function nextSlide() {
     const prevSlide = slides[prevIndex];
     const nextSlideEl = slides[currentSlideIndex];
 
+    // Manage exit animation for previous slide
     prevSlide.classList.remove('active', 'slide-enter');
     prevSlide.classList.add('slide-exit');
 
-    nextSlideEl.classList.add('active', 'slide-enter');
+    // Show next slide
+    showSlide(currentSlideIndex);
 
     // Cleanup exit class after animation
     setTimeout(() => {
         prevSlide.classList.remove('slide-exit');
     }, 800);
+}
+
+function fitSlideToScreen(slide) {
+    if (!slide) return;
+
+    // Reset scale to measure natural size
+    slide.style.transform = 'scale(1)';
+
+    const padding = 40; // Safety padding
+    const w = window.innerWidth - padding;
+    const h = window.innerHeight - padding;
+    const slideH = slide.scrollHeight;
+    const slideW = slide.scrollWidth;
+
+    // Check if scaling is needed
+    if (slideH > h || slideW > w) {
+        const scaleH = h / slideH;
+        const scaleW = w / slideW;
+        const scale = Math.min(scaleH, scaleW); // Fit to the most constrained dimension
+
+        slide.style.transform = `scale(${scale})`;
+    }
 }
 
 function createBackgroundLights() {
